@@ -8,19 +8,27 @@ function App() {
 	useEffect(() => {
 		console.log('Efect', { enable });
 
-		const hanleMove = (event) => {
+		const handleMove = (event) => {
 			const { clientx, clienty } = event;
 			console.log('cursor', clientx, clienty);
 			setPosition({ x: clientx, y: clienty });
 		};
 
 		if (enable) {
-			window.addEventListener('pointermove', hanleMove);
+			window.addEventListener('pointermove', handleMove);
 		}
 
 		return () => {
 			console.log('cleanup');
-			window.removeEventListener('pointermove', hanleMove);
+			window.removeEventListener('pointermove', handleMove);
+		};
+	}, [enable]);
+
+	useEffect(() => {
+		document.body.classList.toggle('no-cursor', enable);
+
+		return () => {
+			document.body.classList.remove('no-cursor');
 		};
 	}, [enable]);
 
