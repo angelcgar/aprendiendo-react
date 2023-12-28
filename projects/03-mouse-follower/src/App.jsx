@@ -1,43 +1,53 @@
 import { useEffect, useState } from 'react';
 
-function App() {
-	const [enable, setEnable] = useState(false);
+const FollowMouse = () => {
+	const [enabled, setEnabled] = useState(false);
 	const [position, setPosition] = useState({ x: 0, y: 0 });
-	console.log(position);
 
+	// pointer move
 	useEffect(() => {
-		console.log('Efect', { enable });
+		console.log('effect ', { enabled });
 
 		const handleMove = (event) => {
-			const { clientx, clienty } = event;
-			console.log('cursor', clientx, clienty);
-			setPosition({ x: clientx, y: clienty });
+			const { clientX, clientY } = event;
+			setPosition({ x: clientX, y: clientY });
 		};
 
-		if (enable) {
+		if (enabled) {
 			window.addEventListener('pointermove', handleMove);
 		}
 
+		// cleanup:
+		// -> cuando el componente se desmonta
+		// -> cuando cambian las dependencias, antes de ejecutar
+		//    el efecto de nuevo
 		return () => {
+			// cleanup method
 			console.log('cleanup');
 			window.removeEventListener('pointermove', handleMove);
 		};
-	}, [enable]);
+	}, [enabled]);
 
+	// [] -> solo se ejecuta una vez cuando se monta el componente
+	// [enabled] -> se ejecuta cuando cambia enabled y cuando se monta el componente
+	// undefined -> se ejecuta cada vez que se renderiza el componente
+
+	// change body className
 	useEffect(() => {
-		document.body.classList.toggle('no-cursor', enable);
+		document.body.classList.toggle('no-cursor', enabled);
 
 		return () => {
 			document.body.classList.remove('no-cursor');
 		};
-	}, [enable]);
+	}, [enabled]);
 
 	return (
-		<main>
+		<>
 			<div
 				style={{
 					position: 'absolute',
-					backgroundColor: '#09f',
+					backgroundColor: 'rgba(0, 0, 0, 0.5)',
+					border: '1px solid #fff',
 					borderRadius: '50%',
 					opacity: 0.8,
 					pointerEvents: 'none',
@@ -45,12 +55,20 @@ function App() {
 					top: -25,
 					width: 50,
 					height: 50,
-					transition: `translate(${position.x}px, ${position.y}px)`,
+					transform: `translate(${position.x}px, ${position.y}px)`,
 				}}
 			/>
-			<button onClick={() => setEnable(!enable)}>
-				{enable ? 'desactivar' : 'activar'} seguir puntero
+			<button onClick={() => setEnabled(!enabled)}>
+				{enabled ? 'Desactivar' : 'Activar'} seguir puntero
 			</button>
+		</>
+	);
+};
+
+function App() {
+	return (
+		<main>
+			<FollowMouse />
 		</main>
 	);
 }
