@@ -12,7 +12,7 @@ export function useCatImage( { fact } ) {
 
     const threeFirstWords = fact.split(' ', 3).join(' ')
 
-    fetch(`https://cataas.com/cat/says/${threeFirstWords}?json=true`)
+    fetch(`https://cataas.com/cat/says/${threeFirstWords}?size=50&color=red&json=true`)
       .then(res => res.json())
       .then(response => {
         const { _id } = response
